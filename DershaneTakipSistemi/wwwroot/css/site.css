@@ -1,0 +1,48 @@
+/* == MEVCUT STÝLLER (DOKUNMA) == */
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+/* body { margin-bottom: 60px; }  <-- BU SATIRI SÝLÝN veya YORUMA ALIN */
+
+
+/* == YENÝ/BÝRLEÞTÝRÝLMÝÞ STÝLLER (ALTINA EKLEYÝN) == */
+
+body {
+    /* Mevcut stilden gelen: */
+    margin-bottom: 60px; /* Footer için boþluk */
+    /* Yeni eklenenler (Seçenek 2): */
+    background-image: url('/images/intersection.webp'); /* Resim yolunu kontrol edin */
+    background-repeat: repeat;
+    background-attachment: fixed; /* Ýsteðe baðlý: Kaydýrýrken sabit kalýr */
+    /* background-color: #f8f9fa; */ /* Resim yüklenemezse görünecek renk (isteðe baðlý) */
+    color: #212529; /* Varsayýlan metin rengi (Bootstrap) */
+    /* Navbar ve Footer için padding (Gerekirse ayarla) */
+    padding-top: 60px; /* Navbar yüksekliðine göre */
+    padding-bottom: 40px; /* Footer yüksekliðine göre */
+}
+
+.container {
+    background-color: #ffffff; /* Ýçerik alaný beyaz */
+    padding: 2rem; /* Ýç boþluk */
+    border-radius: 0.5rem; /* Köþe yuvarlatma */
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1); /* Hafif gölge */
+    margin-top: 2rem; /* Üstten boþluk */
+}
+
+/* ================================================== */

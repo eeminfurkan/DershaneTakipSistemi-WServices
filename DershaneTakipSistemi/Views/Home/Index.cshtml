@@ -1,0 +1,82 @@
+﻿@model DershaneTakipSistemi.Models.DashboardViewModel // Bu satır önemli! Model tipini belirtiyoruz.
+@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Dershane Takip Sistemine Hoş Geldiniz</h1>
+    <p>Genel Durum Özeti</p>
+</div>
+
+<hr />
+
+<div class="row mt-4">
+    @* İstatistik kartları için bir satır *@
+
+    <div class="col-md-3 mb-3">
+        @* Her kart için 3 birimlik sütun (12'lik grid sisteminde 4 kart sığar) *@
+        <div class="card text-white bg-primary h-100">
+            @* Mavi kart, tam yükseklik *@
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-people-fill me-2"></i> @Html.DisplayNameFor(model => model.ToplamOgrenciSayisi)
+                </h5>
+                <p class="card-text display-6">@Model.ToplamOgrenciSayisi</p>
+            </div>
+            <div class="card-footer text-center">
+                <a asp-controller="Ogrencis" asp-action="Index" class="text-white stretched-link">Detaylar <i class="bi bi-arrow-right-circle"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-success h-100">
+            @* Yeşil kart *@
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-person-check-fill me-2"></i> @Html.DisplayNameFor(model => model.AktifOgrenciSayisi)
+                </h5>
+                <p class="card-text display-6">@Model.AktifOgrenciSayisi</p>
+            </div>
+            <div class="card-footer text-center">
+                @* Buraya sadece aktif öğrencileri listeleyen bir link eklenebilir (ileride) *@
+                <a asp-controller="Ogrencis" asp-action="Index" class="text-white stretched-link">Detaylar <i class="bi bi-arrow-right-circle"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-warning h-100">
+            @* Sarı kart *@
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-cash-stack me-2"></i> @Html.DisplayNameFor(model => model.ToplamOdemeTutari)
+                </h5>
+                @* Para birimi formatı için ToString("C") *@
+                <p class="card-text display-6">@Model.ToplamOdemeTutari.ToString("C")</p>
+            </div>
+            <div class="card-footer text-center">
+                <a asp-controller="Odemes" asp-action="Index" class="text-white stretched-link">Detaylar <i class="bi bi-arrow-right-circle"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-danger h-100">
+            @* Kırmızı kart *@
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-calendar-check me-2"></i> @Html.DisplayNameFor(model => model.BugunkuOdemeSayisi)
+                </h5>
+                <p class="card-text display-6">@Model.BugunkuOdemeSayisi</p>
+            </div>
+            <div class="card-footer text-center">
+                @* Buraya sadece bugünkü ödemeleri listeleyen bir link eklenebilir (ileride) *@
+                <a asp-controller="Odemes" asp-action="Index" class="text-white stretched-link">Detaylar <i class="bi bi-arrow-right-circle"></i></a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@* Buraya ileride Son Kayıtlar, Son Ödemeler gibi listeler eklenebilir *@

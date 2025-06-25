@@ -1,0 +1,69 @@
+﻿@model DershaneTakipSistemi.Models.KasaHareketi
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>KasaHareketi</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Aciklama)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Aciklama)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Tarih)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Tarih)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Tutar)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Tutar)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.HareketYonu)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.HareketYonu)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Kategori)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Kategori)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.OdemeYontemi)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.OdemeYontemi)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Ogrenci)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Ogrenci.Ad)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Personel)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Personel.Ad)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Sil" class="btn btn-danger" /> |
+        <a asp-action="Index" class="btn btn-secondary">Listeye Geri Dön</a>
+    </form>
+</div>

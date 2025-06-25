@@ -1,0 +1,131 @@
+﻿@model IEnumerable<DershaneTakipSistemi.Models.KasaHareketi>
+
+@{
+    ViewData["Title"] = "Kasa Hareketleri";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Index" method="get" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <label for="baslangicTarihi" class="form-label">Başlangıç Tarihi</label>
+        <input type="date" id="baslangicTarihi" name="baslangicTarihi" value="@ViewData["MevcutBaslangicTarihi"]" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <label for="bitisTarihi" class="form-label">Bitiş Tarihi</label>
+        <input type="date" id="bitisTarihi" name="bitisTarihi" value="@ViewData["MevcutBitisTarihi"]" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <label for="kategori" class="form-label">Kategori</label>
+        <select name="kategori" asp-items="ViewBag.KategoriListesi" class="form-control">
+            <option value="">-- Tüm Kategoriler --</option>
+        </select>
+    </div>
+    <div class="col-md-3 align-self-end">
+        <button type="submit" class="btn btn-primary">Filtrele</button>
+        <a asp-action="Index" class="btn btn-secondary">Temizle</a>
+    </div>
+</form>
+
+
+
+<h3>Özet</h3>
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Toplam Gelir</h5>
+                <p class="card-text fs-4">@ViewBag.ToplamGelir</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-danger">
+            <div class="card-body">
+                <h5 class="card-title">Toplam Gider</h5>
+                <p class="card-text fs-4">@ViewBag.ToplamGider</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">Bakiye</h5>
+                <p class="card-text fs-4">@ViewBag.Bakiye</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary mb-3">Yeni Hareket Ekle</a>
+</p>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Aciklama)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tarih)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tutar)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HareketYonu)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Kategori)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OdemeYontemi)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ogrenci)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Personel)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Aciklama)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tarih)
+                    @item.Tarih.ToString("dd.MM.yyyy")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tutar)
+                    @item.Tutar.ToString("C")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HareketYonu)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Kategori)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OdemeYontemi)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.Ogrenci.AdSoyad)
+                </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.Personel.AdSoyad)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">Düzenle</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Sil</a>
+                </td>
+        </tr>
+}
+    </tbody>
+</table>
