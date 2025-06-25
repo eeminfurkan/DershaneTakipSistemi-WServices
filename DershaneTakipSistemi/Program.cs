@@ -1,11 +1,10 @@
+// Gerekli using bildirimleri dosyanın en üstünde toplanır.
 using DershaneTakipSistemi.Data;
+using DershaneTakipSistemi.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-// using Microsoft.AspNetCore.Mvc.Razor; // Bu genellikle gerekmez, kald�r�labilir.
-using System.Threading.Tasks; // async Task Main i�in
-using Microsoft.Extensions.Logging; // ILogger i�in
-using System; // Exception i�in
-using System.Linq; // LINQ metotlar� i�in (Select vb.)
+using Microsoft.Extensions.Logging; // ILogger için
+using System; // Exception için
 
 
 namespace DershaneTakipSistemi // Kendi namespace'inizi kontrol edin
@@ -15,136 +14,161 @@ namespace DershaneTakipSistemi // Kendi namespace'inizi kontrol edin
         public static async Task Main(string[] args) // async Task olarak de�i�tirildi
         {
             var builder = WebApplication.CreateBuilder(args);
+            // =======================================================
+            // 1. SERVISLERI KONTEYNERE EKLEME (Dependency Injection)
+            // =======================================================
 
-            // Add services to the container.
-
-            // 1. Veritaban� Ba�lant�s� ve DbContext
+            // Veritabanı bağlantısı
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            // Geli�tirme ortam� i�in veritaban� hata sayfas�
+            // Geliştirme ortamı için veritabanı hata sayfası
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            // 2. Identity Servisleri (Rollerle birlikte)
+            // Identity Servisleri (Rollerle birlikte)
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-                .AddRoles<IdentityRole>() // Rol y�netimi
+                .AddRoles<IdentityRole>() // Rol yönetimi
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            // 3. Repository Servisleri
-            //builder.Services.AddScoped<IOgrenciRepository, EfOgrenciRepository>(); // ��renci Repository Kayd�
-            // Buraya ileride IOdemeRepository vb. eklenecek
+            // Kendi yazdığımız yardımcı servisler
+            builder.Services.AddScoped<OgrenciService>();
+            builder.Services.AddScoped<PersonelService>();
+            builder.Services.AddScoped<SinifService>();
+            builder.Services.AddScoped<KasaHareketiService>();
+            builder.Services.AddScoped<DashboardService>();
 
-            // 4. MVC Controller ve View Servisleri
+
+
+            // İleride diğer servisleri de buraya ekleyebilirsiniz:
+            // builder.Services.AddScoped<PersonelService>(); 
+            // builder.Services.AddScoped<SinifService>(); 
+
+            // MVC Controller, View ve Razor Pages servisleri
             builder.Services.AddControllersWithViews();
-            builder.Services.AddRazorPages(); // Identity UI i�in Razor Pages deste�i
-
-            // --- builder.Services ile ilgili eklemeler buraya ---
+            builder.Services.AddRazorPages(); // Identity UI için gerekli
 
 
-            var app = builder.Build(); // Uygulamay� olu�tur
+            // =======================================================
+            // 2. HTTP ISTEK PIPELINE'INI YAPILANDIRMA (Middleware)
+            // =======================================================
 
-            // Configure the HTTP request pipeline (Middleware S�ras� �nemli!).
+            var app = builder.Build();
+
+            // Geliştirme ortamı için özel ayarlar
             if (app.Environment.IsDevelopment())
             {
-                app.UseMigrationsEndPoint(); // Geli�tirme ortam�nda migration endpoint'i
+                app.UseMigrationsEndPoint();
             }
+            // Üretim ortamı için hata yönetimi
             else
             {
-                app.UseExceptionHandler("/Home/Error"); // Hata y�netimi
-                app.UseHsts(); // HTTPS Strict Transport Security
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
             }
 
-            app.UseHttpsRedirection(); // HTTPS y�nlendirmesi
-            app.UseStaticFiles(); // CSS, JS, Resim gibi statik dosyalar i�in
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
-            app.UseRouting(); // Y�nlendirme middleware'i
+            app.UseRouting();
 
-            app.UseAuthentication(); // Kimlik Do�rulama middleware'i (Authorization'dan �nce!)
-            app.UseAuthorization(); // Yetkilendirme middleware'i
+            // Önce kimlik doğrulama, sonra yetkilendirme gelmeli. Sıra önemli!
+            app.UseAuthentication();
+            app.UseAuthorization();
 
-            // Endpoint Mapping
+            // Rotaları eşleştirme
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-            app.MapRazorPages(); // Identity UI sayfalar� i�in endpointler
+            app.MapRazorPages(); // Identity UI sayfaları için
 
-            // ----- Seed Data Kodu -----
-            // (app nesnesi olu�turulduktan ve pipeline yap�land�r�ld�ktan sonra, app.Run() �ncesi)
+
+            // =======================================================
+            // 3. UYGULAMA BAŞLANGICINDA VERITABANINI HAZIRLAMA
+            // (Migration ve Admin Kullanıcısını Oluşturma)
+            // =======================================================
+
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
+                var logger = services.GetRequiredService<ILogger<Program>>();
+
                 try
                 {
+                    // 1. Adım: Veritabanı göçlerini (migration) uygula
+                    var dbContext = services.GetRequiredService<ApplicationDbContext>();
+                    dbContext.Database.Migrate();
+                    logger.LogInformation("Veritabanı migration'ları başarıyla uygulandı.");
+
+                    // 2. Adım: Admin rolünü ve kullanıcısını oluştur
                     var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                    var logger = services.GetRequiredService<ILogger<Program>>(); // Logger'� ba�ta alal�m
 
-                    // Admin rol� yoksa olu�tur
-                    string adminRoleName = "Admin";
-                    if (!await roleManager.RoleExistsAsync(adminRoleName))
+                    await SeedIdentityData.Initialize(userManager, roleManager, logger);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Uygulama başlangıcında veritabanı hazırlanırken bir hata oluştu.");
+                }
+            }
+
+
+            // =======================================================
+            // 4. UYGULAMAYI ÇALIŞTIRMA
+            // =======================================================
+
+            app.Run();
+        }
+
+        // =======================================================
+        // YARDIMCI SINIF: Başlangıç verilerini oluşturan kısım
+        // Program.cs dosyasını temiz tutmak için ayrı bir statik sınıfa taşıdık.
+        // =======================================================
+        public static class SeedIdentityData
+        {
+            public static async Task Initialize(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, ILogger logger)
+            {
+                const string adminRoleName = "Admin";
+                const string adminEmail = "admin@dershane.com";
+                const string adminPassword = "Password123*"; // GERÇEK PROJELERDE BU ŞİFREYİ KULLANMAYIN!
+
+                // Admin rolü yoksa oluştur
+                if (!await roleManager.RoleExistsAsync(adminRoleName))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(adminRoleName));
+                    logger.LogInformation($"'{adminRoleName}' rolü oluşturuldu.");
+                }
+
+                // Admin kullanıcısı yoksa oluştur
+                var adminUser = await userManager.FindByEmailAsync(adminEmail);
+                if (adminUser == null)
+                {
+                    adminUser = new IdentityUser
                     {
-                        await roleManager.CreateAsync(new IdentityRole(adminRoleName));
-                        logger.LogInformation($"'{adminRoleName}' rol� olu�turuldu."); // Loglama kullan�m�
-                    }
-
-                    // Admin kullan�c�s� yoksa olu�tur ve role ata
-                    string adminEmail = "admin@dershane.com";
-                    string adminPassword = "Password123!"; // Daha g��l� bir �ifre kullan�n!
-
-                    var adminUser = await userManager.FindByEmailAsync(adminEmail);
-                    if (adminUser == null)
+                        UserName = adminEmail,
+                        Email = adminEmail,
+                        EmailConfirmed = true
+                    };
+                    var result = await userManager.CreateAsync(adminUser, adminPassword);
+                    if (result.Succeeded)
                     {
-                        adminUser = new IdentityUser
-                        {
-                            UserName = adminEmail,
-                            Email = adminEmail,
-                            EmailConfirmed = true
-                        };
-                        var createUserResult = await userManager.CreateAsync(adminUser, adminPassword);
-
-                        if (createUserResult.Succeeded)
-                        {
-                            logger.LogInformation($"'{adminEmail}' kullan�c�s� olu�turuldu.");
-                            await userManager.AddToRoleAsync(adminUser, adminRoleName);
-                            logger.LogInformation($"'{adminEmail}' kullan�c�s� '{adminRoleName}' rol�ne atand�.");
-                        }
-                        else
-                        {
-                            logger.LogError($"'{adminEmail}' kullan�c�s� olu�turulamad�: {string.Join(", ", createUserResult.Errors.Select(e => e.Description))}");
-                        }
+                        logger.LogInformation($"'{adminEmail}' kullanıcısı oluşturuldu ve '{adminRoleName}' rolüne atandı.");
+                        await userManager.AddToRoleAsync(adminUser, adminRoleName);
                     }
                     else
                     {
-                        if (!await userManager.IsInRoleAsync(adminUser, adminRoleName))
-                        {
-                            await userManager.AddToRoleAsync(adminUser, adminRoleName);
-                            logger.LogInformation($"Mevcut '{adminEmail}' kullan�c�s� '{adminRoleName}' rol�ne atand�.");
-                        }
+                        // Hataları logla
+                        var errorString = string.Join(", ", result.Errors.Select(e => e.Description));
+                        logger.LogError($"'{adminEmail}' kullanıcısı oluşturulamadı: {errorString}");
                     }
                 }
-                catch (Exception ex)
+                // Admin kullanıcısı var ama rolde değilse, role ata
+                else if (!await userManager.IsInRoleAsync(adminUser, adminRoleName))
                 {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "Ba�lang�� verisi (seed) olu�turulurken bir hata olu�tu.");
+                    await userManager.AddToRoleAsync(adminUser, adminRoleName);
+                    logger.LogInformation($"Mevcut '{adminEmail}' kullanıcısı '{adminRoleName}' rolüne atandı.");
                 }
             }
-            // --------------------------
-            using (var scope = app.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                try
-                {
-                    var dbContext = services.GetRequiredService<DershaneTakipSistemi.Data.ApplicationDbContext>();
-                    dbContext.Database.Migrate(); // Veritabanı göçlerini uygula
-                }
-                catch (Exception ex)
-                {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "Veritabanı migration sırasında bir hata oluştu.");
-                }
-            }
-            app.Run(); // Uygulamay� �al��t�r
         }
     }
 }

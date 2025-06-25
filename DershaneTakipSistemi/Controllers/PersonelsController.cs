@@ -1,55 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using DershaneTakipSistemi.Data;
+﻿// Controllers/PersonelsController.cs
+
 using DershaneTakipSistemi.Models;
+using DershaneTakipSistemi.Services; // <-- Yardımcı sınıfımızı ekledik
 using Microsoft.AspNetCore.Authorization;
-// ClosedXML ve IO using'leri kaldırıldı.
-// Diğer using'ler (System, Linq, Task, Mvc, DbContext, Models, Authorization) zaten olmalı
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore; // Sadece try-catch için gerekli
 
 namespace DershaneTakipSistemi.Controllers
 {
     [Authorize(Roles = "Admin")]
-
     public class PersonelsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly PersonelService _personelService;
 
-        public PersonelsController(ApplicationDbContext context)
+        public PersonelsController(PersonelService personelService)
         {
-            _context = context;
+            _personelService = personelService;
         }
 
         // GET: Personels
-        public async Task<IActionResult> Index(string aramaMetniPersonel) // Parametre adı güncellendi
+        public async Task<IActionResult> Index(string aramaMetniPersonel)
         {
-            ViewData["GecerliAramaPersonel"] = aramaMetniPersonel; // ViewData anahtarı güncellendi
-
-            var personellerSorgusu = from p in _context.Personeller select p;
-
-            if (!String.IsNullOrEmpty(aramaMetniPersonel))
-            {
-                personellerSorgusu = personellerSorgusu.Where(p =>
-                    (p.Ad != null && p.Ad.ToLower().Contains(aramaMetniPersonel.ToLower())) ||
-                    (p.Soyad != null && p.Soyad.ToLower().Contains(aramaMetniPersonel.ToLower())) ||
-                    (p.Gorevi != null && p.Gorevi.ToLower().Contains(aramaMetniPersonel.ToLower()))
-                // İstersen TCKimlik veya diğer alanları da ekleyebilirsin
-                );
-            }
-
-            var filtrelenmisPersoneller = await personellerSorgusu
-                                                    .OrderBy(p => p.Ad)
-                                                    .ThenBy(p => p.Soyad)
-                                                    .ToListAsync();
-
-            return View(filtrelenmisPersoneller);
+            ViewData["GecerliAramaPersonel"] = aramaMetniPersonel;
+            var model = await _personelService.GetPersonellerAsync(aramaMetniPersonel);
+            return View(model);
         }
-
-        
 
         // GET: Personels/Create
         public IActionResult Create()
@@ -60,27 +35,20 @@ namespace DershaneTakipSistemi.Controllers
         // POST: Personels/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        // Bind attribute'ü sadeleştirildi.
         public async Task<IActionResult> Create([Bind("Id,Ad,Soyad,Gorevi,AktifMi")] Personel personel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(personel);
-                await _context.SaveChangesAsync();
+                await _personelService.CreatePersonelAsync(personel);
                 return RedirectToAction(nameof(Index));
             }
             return View(personel);
         }
 
         // GET: Personels/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var personel = await _context.Personeller.FindAsync(id);
+            var personel = await _personelService.GetPersonelByIdAsync(id);
             if (personel == null)
             {
                 return NotFound();
@@ -91,7 +59,6 @@ namespace DershaneTakipSistemi.Controllers
         // POST: Personels/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        // Bind attribute'ü sadeleştirildi.
         public async Task<IActionResult> Edit(int id, [Bind("Id,Ad,Soyad,Gorevi,AktifMi")] Personel personel)
         {
             if (id != personel.Id)
@@ -103,12 +70,11 @@ namespace DershaneTakipSistemi.Controllers
             {
                 try
                 {
-                    _context.Update(personel);
-                    await _context.SaveChangesAsync();
+                    await _personelService.UpdatePersonelAsync(personel);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PersonelExists(personel.Id))
+                    if (!_personelService.PersonelExists(personel.Id))
                     {
                         return NotFound();
                     }
@@ -125,18 +91,13 @@ namespace DershaneTakipSistemi.Controllers
         // GET: Personels/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var personel = await _context.Personeller
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var personel = await _personelService.GetPersonelByIdAsync(id.Value);
             if (personel == null)
             {
                 return NotFound();
             }
-
             return View(personel);
         }
 
@@ -145,21 +106,19 @@ namespace DershaneTakipSistemi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var personel = await _context.Personeller.FindAsync(id);
-            if (personel != null)
+            try
             {
-                _context.Personeller.Remove(personel);
+                await _personelService.DeletePersonelAsync(id);
+                TempData["SuccessMessage"] = "Personel başarıyla silindi.";
+            }
+            catch (DbUpdateException)
+            {
+                // Silme işlemi başarısız olursa (ilişkili veri varsa) kullanıcıyı bilgilendir.
+                TempData["ErrorMessage"] = "Bu personel silinemedi. Personele ait başka kayıtlar olabilir.";
+                return RedirectToAction(nameof(Delete), new { id = id });
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
-        private bool PersonelExists(int id)
-        {
-            return _context.Personeller.Any(e => e.Id == id);
-        }
-
-        // ===== EXCEL EXPORT ACTION KALDIRILDI =====
     }
 }
