@@ -6,26 +6,32 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+<div class="alert alert-danger mt-4">
+    <h5>Bu sınıfı kalıcı olarak silmek istediğinizden emin misiniz?</h5>
+    <p>Bu işlem geri alınamaz. Sınıfa kayıtlı öğrenciler varsa silme işlemi başarısız olacaktır.</p>
+</div>
 
-<h3>Bu sınıfı silmek istediğinizden emin misiniz?</h3>
 <div>
     <h4>Silinecek Sınıf Bilgileri</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Ad)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Ad)
         </dd>
-
+        <dt class="col-sm-3">
+            Sorumlu Öğretmen
+        </dt>
+        <dd class="col-sm-9">
+            @(Model.SorumluOgretmen?.AdSoyad ?? "Atanmamış")
+        </dd>
     </dl>
 
-    <form asp-action="Delete">
+    <form asp-action="Delete" class="mt-4">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Sil" class="btn btn-danger" /> |
-        <a asp-action="Index" class="btn btn-secondary ms-2">Listeye Geri Dön</a>
+        <button type="submit" class="btn btn-danger">Evet, Sil</button>
+        <a asp-action="Index" class="btn btn-secondary">İptal Et ve Listeye Dön</a>
     </form>
 </div>
-

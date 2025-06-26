@@ -1,49 +1,56 @@
 ﻿@model DershaneTakipSistemi.Models.Personel
 
 @{
-    {
-        ViewData["Title"] = "Personel Sil";
-    }
+    ViewData["Title"] = "Personel Sil";
 }
 
 <h1>@ViewData["Title"]</h1>
 
-<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+<div class="alert alert-danger mt-4">
+    <h5>Bu personeli kalıcı olarak silmek istediğinizden emin misiniz?</h5>
+    <p>Bu işlem geri alınamaz.</p>
+</div>
 
-<h3>Bu personeli silmek istediğinizden emin misiniz?</h3>
 <div>
     <h4>Silinecek Personel Bilgileri</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Ad)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Ad)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Soyad)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Soyad)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Gorevi)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Gorevi)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.AktifMi)
         </dt>
-        <dd class="col-sm-10">
-            @(Model.AktifMi ? "Evet" : "Hayır")
+        <dd class="col-sm-9">
+            @if (Model.AktifMi)
+            {
+                <span class="badge bg-success">Aktif</span>
+            }
+            else
+            {
+                <span class="badge bg-danger">Aktif Değil</span>
+            }
         </dd>
     </dl>
 
-    <form asp-action="Delete">
+    <form asp-action="Delete" class="mt-4">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Sil" class="btn btn-danger" /> |
-        <a asp-action="Index" class="btn btn-secondary">Listeye Geri Dön</a>
+        <button type="submit" class="btn btn-danger">Evet, Sil</button>
+        <a asp-action="Index" class="btn btn-secondary">İptal Et ve Listeye Dön</a>
     </form>
 </div>

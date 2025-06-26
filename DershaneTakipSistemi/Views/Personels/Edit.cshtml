@@ -1,9 +1,7 @@
 ﻿@model DershaneTakipSistemi.Models.Personel
 
 @{
-    {
-        ViewData["Title"] = "Personel Bilgilerini Düzenle";
-    }
+    ViewData["Title"] = "Personel Bilgilerini Düzenle";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -14,56 +12,48 @@
     <div class="col-md-8">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Düzenlenen personelin ID'si form ile birlikte gizli olarak gönderilir. -->
             <input type="hidden" asp-for="Id" />
 
             <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label asp-for="Ad" class="control-label"></label>
-                        <input asp-for="Ad" class="form-control" />
-                        <span asp-validation-for="Ad" class="text-danger"></span>
-                    </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Ad" class="form-label"></label>
+                    <input asp-for="Ad" class="form-control" />
+                    <span asp-validation-for="Ad" class="text-danger"></span>
                 </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label asp-for="Soyad" class="control-label"></label>
-                        <input asp-for="Soyad" class="form-control" />
-                        <span asp-validation-for="Soyad" class="text-danger"></span>
-                    </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Soyad" class="form-label"></label>
+                    <input asp-for="Soyad" class="form-control" />
+                    <span asp-validation-for="Soyad" class="text-danger"></span>
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label asp-for="Gorevi" class="control-label"></label>
-                        <input asp-for="Gorevi" class="form-control" />
-                        <span asp-validation-for="Gorevi" class="text-danger"></span>
-                    </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Gorevi" class="form-label"></label>
+                    <input asp-for="Gorevi" class="form-control" />
+                    <span asp-validation-for="Gorevi" class="text-danger"></span>
                 </div>
-            </div>
-            <div class="row">
-
-                <div class="col-md-6">
-                    <div class="form-group form-check mb-3 pt-4">
-                        <input class="form-check-input" asp-for="AktifMi" />
+                <div class="col-md-6 d-flex align-items-end pb-3">
+                    <div class="form-check">
+                        <!-- Düzenleme ekranında 'checked' özelliği olmaz, mevcut değeri gösterir. -->
+                        <input class="form-check-input" type="checkbox" asp-for="AktifMi" />
                         <label class="form-check-label" asp-for="AktifMi"></label>
                     </div>
                 </div>
             </div>
 
-            <div class="form-group mt-4">
-                <input type="submit" value="Kaydet" class="btn btn-success" />
-                <a asp-action="Index" class="btn btn-secondary ms-2">Listeye Geri Dön</a>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+                <a asp-action="Index" class="btn btn-secondary">Listeye Geri Dön</a>
             </div>
         </form>
     </div>
 </div>
 
 @section Scripts {
-        {
     @{
-        { await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-        }
 }

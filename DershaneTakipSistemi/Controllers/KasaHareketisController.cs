@@ -1,7 +1,7 @@
 ﻿// Controllers/KasaHareketisController.cs
 
 using DershaneTakipSistemi.Models;
-using DershaneTakipSistemi.Services; // <-- Yardımcı sınıfımızı ekledik
+using DershaneTakipSistemi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -82,9 +82,15 @@ namespace DershaneTakipSistemi.Controllers
             var kasaHareketi = await _kasaHareketiService.GetKasaHareketiByIdAsync(id.Value);
             if (kasaHareketi == null) return NotFound();
 
+            // --- DÜZELTME BAŞLANGICI ---
+            // Edit sayfasını açarken TÜM dropdown listelerini dolduruyoruz.
             ViewData["OgrenciId"] = _kasaHareketiService.GetOgrenciSelectList(kasaHareketi.OgrenciId);
             ViewData["PersonelId"] = _kasaHareketiService.GetPersonelSelectList(kasaHareketi.PersonelId);
-            // Diğer enum dropdown'ları da burada doldurulabilir.
+            ViewData["HareketYonu"] = new SelectList(Enum.GetValues(typeof(HareketYonu)), kasaHareketi.HareketYonu);
+            ViewData["Kategori"] = new SelectList(Enum.GetValues(typeof(Kategori)), kasaHareketi.Kategori);
+            ViewData["OdemeYontemi"] = new SelectList(Enum.GetValues(typeof(OdemeYontemi)), kasaHareketi.OdemeYontemi);
+            // --- DÜZELTME SONU ---
+
             return View(kasaHareketi);
         }
 
@@ -114,8 +120,17 @@ namespace DershaneTakipSistemi.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            // --- DÜZELTME BAŞLANGICI ---
+            // Eğer model geçersizse ve form tekrar gösterilecekse,
+            // TÜM dropdown listelerini tekrar dolduruyoruz.
             ViewData["OgrenciId"] = _kasaHareketiService.GetOgrenciSelectList(kasaHareketi.OgrenciId);
             ViewData["PersonelId"] = _kasaHareketiService.GetPersonelSelectList(kasaHareketi.PersonelId);
+            ViewData["HareketYonu"] = new SelectList(Enum.GetValues(typeof(HareketYonu)), kasaHareketi.HareketYonu);
+            ViewData["Kategori"] = new SelectList(Enum.GetValues(typeof(Kategori)), kasaHareketi.Kategori);
+            ViewData["OdemeYontemi"] = new SelectList(Enum.GetValues(typeof(OdemeYontemi)), kasaHareketi.OdemeYontemi);
+            // --- DÜZELTME SONU ---
+
             return View(kasaHareketi);
         }
 
@@ -141,4 +156,3 @@ namespace DershaneTakipSistemi.Controllers
         }
     }
 }
-

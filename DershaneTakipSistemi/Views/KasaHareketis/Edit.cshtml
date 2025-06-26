@@ -1,62 +1,82 @@
 ﻿@model DershaneTakipSistemi.Models.KasaHareketi
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Kasa Hareketini Düzenle";
 }
 
-<h1>Edit</h1>
-
-<h4>KasaHareketi</h4>
+<h1>@ViewData["Title"]</h1>
+<h4>Kasa Hareketi Bilgileri</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-8">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <!-- Düzenlenen kaydın ID'si form ile birlikte gizli olarak gönderilir. -->
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Aciklama" class="control-label"></label>
-                <input asp-for="Aciklama" class="form-control" />
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Tarih" class="form-label"></label>
+                    <input asp-for="Tarih" class="form-control" type="date" />
+                    <span asp-validation-for="Tarih" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Tutar" class="form-label"></label>
+                    <input asp-for="Tutar" class="form-control" />
+                    <span asp-validation-for="Tutar" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Aciklama" class="form-label"></label>
+                <textarea asp-for="Aciklama" class="form-control" rows="3"></textarea>
                 <span asp-validation-for="Aciklama" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Tarih" class="control-label"></label>
-                <input asp-for="Tarih" class="form-control" />
-                <span asp-validation-for="Tarih" class="text-danger"></span>
 
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="HareketYonu" class="form-label"></label>
+                    <select asp-for="HareketYonu" class="form-select" asp-items="ViewBag.HareketYonu"></select>
+                    <span asp-validation-for="HareketYonu" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="OdemeYontemi" class="form-label"></label>
+                    <select asp-for="OdemeYontemi" class="form-select" asp-items="ViewBag.OdemeYontemi"></select>
+                    <span asp-validation-for="OdemeYontemi" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Tutar" class="control-label"></label>
-                <input asp-for="Tutar" class="form-control" />
-                <span asp-validation-for="Tutar" class="text-danger"></span>
+
+            <div class="row">
+                <!-- Kategori -->
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Kategori" class="form-label"></label>
+                    <select id="Kategori" asp-for="Kategori" class="form-select" asp-items="ViewBag.Kategori"></select>
+                    <span asp-validation-for="Kategori" class="text-danger"></span>
+                </div>
+
+                <!-- Öğrenci Alanı -->
+                <div class="col-md-6 mb-3" id="ogrenci-alanı" style="display:none;">
+                    <label asp-for="OgrenciId" class="form-label"></label>
+                    <select asp-for="OgrenciId" class="form-select" asp-items="ViewBag.OgrenciId">
+                        <option value="">-- Öğrenci Seçin --</option>
+                    </select>
+                    <span asp-validation-for="OgrenciId" class="text-danger"></span>
+                </div>
+
+                <!-- Personel Alanı -->
+                <div class="col-md-6 mb-3" id="personel-alanı" style="display:none;">
+                    <label asp-for="PersonelId" class="form-label"></label>
+                    <select asp-for="PersonelId" class="form-select" asp-items="ViewBag.PersonelId">
+                        <option value="">-- Personel Seçin --</option>
+                    </select>
+                    <span asp-validation-for="PersonelId" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="HareketYonu" class="control-label"></label>
-                <select asp-for="HareketYonu" class="form-control"></select>
-                <span asp-validation-for="HareketYonu" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Kategori" class="control-label"></label>
-                <select asp-for="Kategori" class="form-control"></select>
-                <span asp-validation-for="Kategori" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="OdemeYontemi" class="control-label"></label>
-                <input asp-for="OdemeYontemi" class="form-control" />
-                <span asp-validation-for="OdemeYontemi" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="OgrenciId" class="control-label"></label>
-                <select asp-for="OgrenciId" class="form-control" asp-items="ViewBag.OgrenciId"></select>
-                <span asp-validation-for="OgrenciId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PersonelId" class="control-label"></label>
-                <select asp-for="PersonelId" class="form-control" asp-items="ViewBag.PersonelId"></select>
-                <span asp-validation-for="PersonelId" class="text-danger"></span>
-            </div>
-            <div class="form-group mt-4">
-                <input type="submit" value="Kaydet" class="btn btn-success" />
-                <a asp-action="Index" class="btn btn-secondary ms-2">Listeye Geri Dön</a>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+                <a asp-action="Index" class="btn btn-secondary">Listeye Geri Dön</a>
             </div>
         </form>
     </div>
@@ -66,4 +86,30 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <!-- Create sayfasındaki JS kodunun aynısı, çünkü mantık aynı. -->
+    <script>
+        $(document).ready(function () {
+            var kategoriDropdown = $("#Kategori");
+            var ogrenciAlani = $("#ogrenci-alanı");
+            var personelAlani = $("#personel-alanı");
+
+            function kategoriyeGoreGosterGizle() {
+                var seciliKategori = kategoriDropdown.val();
+
+                ogrenciAlani.hide();
+                personelAlani.hide();
+
+                if (seciliKategori === "OgrenciOdemesi") {
+                    ogrenciAlani.show();
+                } else if (seciliKategori === "Maas") {
+                    personelAlani.show();
+                }
+            }
+
+            // Sayfa yüklendiğinde ve kategori değiştiğinde fonksiyonu çalıştır
+            kategoriyeGoreGosterGizle();
+            kategoriDropdown.on("change", kategoriyeGoreGosterGizle);
+        });
+    </script>
 }

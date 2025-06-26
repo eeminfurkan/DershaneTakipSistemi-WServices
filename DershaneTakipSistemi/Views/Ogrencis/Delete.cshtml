@@ -6,56 +6,62 @@
 
 <h1>@ViewData["Title"]</h1>
 
-@* Hata mesajlarını göstermek için Validation Summary *@
-<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+<div class="alert alert-danger mt-4">
+    <h5>Bu öğrenciyi kalıcı olarak silmek istediğinizden emin misiniz?</h5>
+    <p>Bu işlem geri alınamaz.</p>
+</div>
 
-<h3>Bu öğrenciyi silmek istediğinizden emin misiniz?</h3>
 <div>
     <h4>Silinecek Öğrenci Bilgileri</h4>
-    @* ... (dl listesi aynı kalır) ... *@
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Ad)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Ad)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Soyad)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Soyad)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.CepTelefonu)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.CepTelefonu)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Sinifi)
+        </dt>
+        <dd class="col-sm-9">
+            @(Model.Sinifi?.Ad ?? "Atanmamış")
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.AktifMi)
+        </dt>
+        <dd class="col-sm-9">
+            @if (Model.AktifMi)
+            {
+                <span class="badge bg-success">Aktif</span>
+            }
+            else
+            {
+                <span class="badge bg-danger">Pasif</span>
+            }
+        </dd>
+    </dl>
 
-    <form asp-action="Delete">
-        @* ... (gizli Id inputu ve butonlar aynı kalır) ... *@
+    <form asp-action="Delete" class="mt-4">
+        <!-- Silinecek öğrencinin ID'si form ile birlikte gizli olarak gönderilir -->
+        <input type="hidden" asp-for="Id" />
+
+        <!-- Silme işlemi için tehlikeyi belirten kırmızı buton -->
+        <button type="submit" class="btn btn-danger">Evet, Sil</button>
+
+        <!-- Vazgeçme işlemi için ikincil buton -->
+        <a asp-action="Index" class="btn btn-secondary">İptal Et ve Listeye Dön</a>
     </form>
-</div>
-<hr />
-<dl class="row">
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.Ad)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.Ad)
-    </dd>
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.Soyad)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.Soyad)
-    </dd>
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.CepTelefonu)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.CepTelefonu)
-    </dd>
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.KayitTarihi)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.KayitTarihi)
-    </dd>
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.AktifMi)
-    </dt>
-    <dd class="col-sm-10">
-        @(Model.AktifMi ? "Evet" : "Hayır")
-    </dd>
-    @* Diğer önemli gördüğünüz alanları buraya ekleyebilirsiniz *@
-</dl>
-
-<form asp-action="Delete">
-    <input type="hidden" asp-for="Id" />
-    <input type="submit" value="Sil" class="btn btn-danger" /> |
-    <a asp-action="Index" class="btn btn-secondary">Listeye Geri Dön</a>
-</form>
 </div>
