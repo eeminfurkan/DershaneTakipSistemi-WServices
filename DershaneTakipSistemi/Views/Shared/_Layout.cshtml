@@ -8,10 +8,6 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
-<!-- 1. ADIM: Body'e flexbox sınıfları ekleniyor -->
-<!-- d-flex: flexbox'ı aktif eder -->
-<!-- flex-column: içeriği dikey sıralar -->
-<!-- min-vh-100: body'nin en az ekran yüksekliğinde olmasını sağlar -->
 <body class="d-flex flex-column min-vh-100">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -51,8 +47,6 @@
         </main>
     </div>
 
-    <!-- 2. ADIM: Footer'a "mt-auto" ekleniyor -->
-    <!-- Bu sınıf, flexbox içinde footer'ın kendisini otomatik olarak en alta itmesini sağlar -->
     <footer class="border-top footer text-muted mt-auto">
         <div class="container">
             &copy; @DateTime.Now.Year - DershaneTakipSistemi - <a asp-area="" asp-controller="Home" asp-action="Privacy">Hakkında</a>

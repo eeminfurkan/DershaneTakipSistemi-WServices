@@ -45,14 +45,12 @@
             </div>
 
             <div class="row">
-                <!-- Kategori -->
                 <div class="col-md-6 mb-3">
                     <label asp-for="Kategori" class="form-label"></label>
                     <select id="Kategori" asp-for="Kategori" class="form-select" asp-items="ViewBag.Kategori"></select>
                     <span asp-validation-for="Kategori" class="text-danger"></span>
                 </div>
 
-                <!-- Öğrenci Alanı -->
                 <div class="col-md-6 mb-3" id="ogrenci-alanı" style="display:none;">
                     <label asp-for="OgrenciId" class="form-label"></label>
                     <select asp-for="OgrenciId" class="form-select" asp-items="ViewBag.OgrenciId">
@@ -61,7 +59,6 @@
                     <span asp-validation-for="OgrenciId" class="text-danger"></span>
                 </div>
 
-                <!-- Personel Alanı -->
                 <div class="col-md-6 mb-3" id="personel-alanı" style="display:none;">
                     <label asp-for="PersonelId" class="form-label"></label>
                     <select asp-for="PersonelId" class="form-select" asp-items="ViewBag.PersonelId">
@@ -84,7 +81,6 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 
-    <!-- Sizin yazdığınız harika JS kodu, hiç değiştirilmeden korunuyor -->
     <script>
         $(document).ready(function () {
             var kategoriDropdown = $("#Kategori");
@@ -94,7 +90,6 @@
             function kategoriyeGoreGosterGizle() {
                 var seciliKategori = kategoriDropdown.val();
 
-                // Başlangıçta ikisini de gizle
                 ogrenciAlani.hide();
                 personelAlani.hide();
 
@@ -105,7 +100,6 @@
                 }
             }
 
-            // Sayfa yüklendiğinde ve kategori değiştiğinde fonksiyonu çalıştır
             kategoriyeGoreGosterGizle();
             kategoriDropdown.on("change", kategoriyeGoreGosterGizle);
         });

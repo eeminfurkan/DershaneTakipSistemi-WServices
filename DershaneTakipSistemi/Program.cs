@@ -1,17 +1,16 @@
-// Gerekli using bildirimleri dosyanın en üstünde toplanır.
 using DershaneTakipSistemi.Data;
 using DershaneTakipSistemi.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging; // ILogger için
-using System; // Exception için
+using Microsoft.Extensions.Logging;
+using System;
 
 
-namespace DershaneTakipSistemi // Kendi namespace'inizi kontrol edin
+namespace DershaneTakipSistemi
 {
     public class Program
     {
-        public static async Task Main(string[] args) // async Task olarak de�i�tirildi
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
             // =======================================================
@@ -130,7 +129,7 @@ namespace DershaneTakipSistemi // Kendi namespace'inizi kontrol edin
             {
                 const string adminRoleName = "Admin";
                 const string adminEmail = "admin@dershane.com";
-                const string adminPassword = "Password123*"; // GERÇEK PROJELERDE BU ŞİFREYİ KULLANMAYIN!
+                const string adminPassword = "Password123*";
 
                 // Admin rolü yoksa oluştur
                 if (!await roleManager.RoleExistsAsync(adminRoleName))

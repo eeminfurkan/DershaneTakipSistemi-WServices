@@ -29,7 +29,7 @@
                 <td>@user.Email</td>
                 <td>@string.Join(", ", user.Roles)</td>
                 <td>
-                    @if (user.UserName != User.Identity.Name) // Kullanıcının kendi kendini değiştirmesini engelle
+                    @if (user.UserName != User.Identity.Name)
                     {
                         if (user.Roles.Contains("Admin"))
                         {

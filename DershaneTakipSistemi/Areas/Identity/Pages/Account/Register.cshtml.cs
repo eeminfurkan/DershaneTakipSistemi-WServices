@@ -1,6 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
+﻿#nullable disable
 
 using System;
 using System.Collections.Generic;
@@ -18,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Authorization; // Bu using ifadesini dosyanın başına ekleyin eğer yoksa
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace DershaneTakipSistemi.Areas.Identity.Pages.Account
@@ -153,7 +151,6 @@ namespace DershaneTakipSistemi.Areas.Identity.Pages.Account
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return Page();
         }
 

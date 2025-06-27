@@ -4,10 +4,8 @@
     ViewData["Title"] = "Öğrenciler";
 }
 
-<!-- Stil tamamen sizin orijinal kodunuzdaki gibi sadeleştirildi -->
 <h1>@ViewData["Title"]</h1>
 
-<!-- Arama Formu -->
 <form asp-action="Index" method="get" class="mb-3">
     <div class="input-group">
         <input type="text" name="aramaMetni" class="form-control" placeholder="Ad veya Soyada göre ara..." value="@ViewData["GecerliArama"]" />
@@ -41,7 +39,6 @@
                         <td>@Html.DisplayFor(modelItem => item.AdSoyad)</td>
                         <td>@Html.DisplayFor(modelItem => item.CepTelefonu)</td>
                         <td>
-                            @* SADECE GÖRÜNMEYEN BU İYİLEŞTİRME KORUNDU *@
                             @(item.Sinifi?.Ad ?? "Atanmamış")
                         </td>
                         <td>@item.KayitTarihi.ToShortDateString()</td>
@@ -67,7 +64,6 @@
 }
 else
 {
-    @* SADECE GÖRÜNMEYEN BU İYİLEŞTİRME KORUNDU *@
     <div class="alert alert-warning text-center mt-4">
         Kayıtlı öğrenci bulunamadı.
     </div>

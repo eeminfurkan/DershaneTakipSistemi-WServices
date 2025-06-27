@@ -1,7 +1,5 @@
-﻿// Controllers/SinifsController.cs
-
-using DershaneTakipSistemi.Models;
-using DershaneTakipSistemi.Services; // <-- Yardımcı sınıfımızı ekledik
+﻿using DershaneTakipSistemi.Models;
+using DershaneTakipSistemi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -37,8 +35,6 @@ namespace DershaneTakipSistemi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Sinif sinif)
         {
-            // Bu navigation property'leri model state'ten çıkarmak,
-            // gereksiz validasyon hatalarını önler.
             ModelState.Remove(nameof(sinif.SorumluOgretmen));
             ModelState.Remove(nameof(sinif.Ogrenciler));
 

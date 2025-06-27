@@ -13,7 +13,6 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <!-- Düzenlenen öğrencinin ID'si form ile birlikte gizli olarak gönderilir. -->
             <input type="hidden" asp-for="Id" />
 
             <div class="row">
@@ -52,7 +51,6 @@
                 </div>
                 <div class="col-md-6 d-flex align-items-end pb-3">
                     <div class="form-check">
-                        <!-- Düzenleme ekranında 'checked' özelliği olmaz, mevcut değeri gösterir. -->
                         <input class="form-check-input" type="checkbox" asp-for="AktifMi" />
                         <label class="form-check-label" asp-for="AktifMi"></label>
                     </div>

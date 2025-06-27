@@ -17,7 +17,6 @@
             <thead>
                 <tr>
                     <th>
-                        <!-- Düzeltme: Model boşken hata vermemesi için FirstOrDefault() kaldırıldı. -->
                         @Html.DisplayNameFor(model => model.Ad)
                     </th>
                     <th>
@@ -37,11 +36,9 @@
                             @Html.DisplayFor(modelItem => item.Ad)
                         </td>
                         <td>
-                            <!-- Sorumlu öğretmen null olabilir, kontrol doğru. -->
                             @(item.SorumluOgretmen?.AdSoyad ?? "Atanmamış")
                         </td>
                         <td>
-                            <!-- Öğrenci listesi null olabilir, kontrol doğru. -->
                             @(item.Ogrenciler?.Count ?? 0)
                         </td>
                         <td>

@@ -1,17 +1,14 @@
-﻿// Controllers/OgrencisController.cs
-
-using DershaneTakipSistemi.Models;
-using DershaneTakipSistemi.Services; // <-- Yardımcı sınıfımızı kullanabilmek için ekledik
+﻿using DershaneTakipSistemi.Models;
+using DershaneTakipSistemi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore; // Sadece Edit'teki try-catch için lazım
+using Microsoft.EntityFrameworkCore;
 
 namespace DershaneTakipSistemi.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class OgrencisController : Controller
     {
-        // Controller artık veritabanına değil, OgrenciService yardımcısına bağımlı.
         private readonly OgrenciService _ogrenciService;
 
         public OgrencisController(OgrenciService ogrenciService)
@@ -23,7 +20,6 @@ namespace DershaneTakipSistemi.Controllers
         public async Task<IActionResult> Index(string aramaMetni)
         {
             ViewData["GecerliArama"] = aramaMetni;
-            // Tüm listeleme işini yardımcı sınıfa devrediyoruz.
             var model = await _ogrenciService.GetOgrencilerAsync(aramaMetni);
             return View(model);
         }
@@ -31,7 +27,6 @@ namespace DershaneTakipSistemi.Controllers
         // GET: Ogrencis/Create
         public IActionResult Create()
         {
-            // Dropdown listesini doldurma işini yardımcıya devrediyoruz.
             ViewData["SinifId"] = _ogrenciService.GetSinifSelectList();
             return View();
         }
@@ -43,11 +38,9 @@ namespace DershaneTakipSistemi.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Öğrenciyi veritabanına ekleme işini yardımcıya devrediyoruz.
                 await _ogrenciService.CreateOgrenciAsync(ogrenci);
                 return RedirectToAction(nameof(Index));
             }
-            // Hata durumunda dropdown'ı tekrar dolduruyoruz.
             ViewData["SinifId"] = _ogrenciService.GetSinifSelectList(ogrenci.SinifId);
             return View(ogrenci);
         }
@@ -55,7 +48,6 @@ namespace DershaneTakipSistemi.Controllers
         // GET: Ogrencis/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            // Öğrenciyi bulma işini yardımcıya devrediyoruz.
             var ogrenci = await _ogrenciService.GetOgrenciByIdAsync(id);
             if (ogrenci == null)
             {
@@ -79,12 +71,10 @@ namespace DershaneTakipSistemi.Controllers
             {
                 try
                 {
-                    // Öğrenciyi güncelleme işini yardımcıya devrediyoruz.
                     await _ogrenciService.UpdateOgrenciAsync(ogrenci);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    // "Exists" kontrolünü bile yardımcıya devrediyoruz.
                     if (!_ogrenciService.OgrenciExists(ogrenci.Id))
                     {
                         return NotFound();
@@ -120,13 +110,11 @@ namespace DershaneTakipSistemi.Controllers
         {
             try
             {
-                // Silme işini yardımcıya devrediyoruz.
                 await _ogrenciService.DeleteOgrenciAsync(id);
                 TempData["SuccessMessage"] = "Öğrenci başarıyla silindi.";
             }
             catch (DbUpdateException)
             {
-                // Silme işlemi başarısız olursa (ilişkili veri varsa) kullanıcıyı bilgilendir.
                 TempData["ErrorMessage"] = "Bu öğrenci silinemedi. Öğrenciye ait ödeme kaydı olabilir.";
                 return RedirectToAction(nameof(Delete), new { id = id });
             }

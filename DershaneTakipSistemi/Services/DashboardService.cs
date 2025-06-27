@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace DershaneTakipSistemi.Services
 {
-    // Bu sınıf, anasayfa (dashboard) için gereken tüm verileri hazırlayacak.
     public class DashboardService
     {
         private readonly ApplicationDbContext _context;
@@ -19,12 +18,10 @@ namespace DershaneTakipSistemi.Services
             _context = context;
         }
 
-        // HomeController'daki Index metodunun tüm veritabanı mantığı burada.
         public async Task<DashboardViewModel> GetDashboardDataAsync()
         {
             if (_context.Ogrenciler == null || _context.KasaHareketleri == null)
             {
-                // Veritabanı tabloları boşsa, boş bir model döndür.
                 return new DashboardViewModel();
             }
 

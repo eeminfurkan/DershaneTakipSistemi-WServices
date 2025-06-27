@@ -1,10 +1,8 @@
-﻿// Controllers/PersonelsController.cs
-
-using DershaneTakipSistemi.Models;
-using DershaneTakipSistemi.Services; // <-- Yardımcı sınıfımızı ekledik
+﻿using DershaneTakipSistemi.Models;
+using DershaneTakipSistemi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore; // Sadece try-catch için gerekli
+using Microsoft.EntityFrameworkCore;
 
 namespace DershaneTakipSistemi.Controllers
 {
@@ -113,7 +111,6 @@ namespace DershaneTakipSistemi.Controllers
             }
             catch (DbUpdateException)
             {
-                // Silme işlemi başarısız olursa (ilişkili veri varsa) kullanıcıyı bilgilendir.
                 TempData["ErrorMessage"] = "Bu personel silinemedi. Personele ait başka kayıtlar olabilir.";
                 return RedirectToAction(nameof(Delete), new { id = id });
             }

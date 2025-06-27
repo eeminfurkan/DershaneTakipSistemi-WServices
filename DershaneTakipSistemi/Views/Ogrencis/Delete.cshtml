@@ -55,13 +55,10 @@
     </dl>
 
     <form asp-action="Delete" class="mt-4">
-        <!-- Silinecek öğrencinin ID'si form ile birlikte gizli olarak gönderilir -->
         <input type="hidden" asp-for="Id" />
 
-        <!-- Silme işlemi için tehlikeyi belirten kırmızı buton -->
         <button type="submit" class="btn btn-danger">Evet, Sil</button>
 
-        <!-- Vazgeçme işlemi için ikincil buton -->
         <a asp-action="Index" class="btn btn-secondary">İptal Et ve Listeye Dön</a>
     </form>
 </div>

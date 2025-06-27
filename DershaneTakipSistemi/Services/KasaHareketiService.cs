@@ -1,6 +1,4 @@
-﻿// Services/KasaHareketiService.cs
-
-using DershaneTakipSistemi.Data;
+﻿using DershaneTakipSistemi.Data;
 using DershaneTakipSistemi.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace DershaneTakipSistemi.Services
 {
-    // Bu bizim yeni "Kasa İşleri Yardımcısı" sınıfımız.
     public class KasaHareketiService
     {
         private readonly ApplicationDbContext _context;
@@ -21,7 +18,6 @@ namespace DershaneTakipSistemi.Services
             _context = context;
         }
 
-        // Index sayfasındaki tüm filtreleme ve hesaplama mantığı burada.
         public async Task<List<KasaHareketi>> GetKasaHareketleriAsync(DateTime? baslangicTarihi, DateTime? bitisTarihi, Kategori? kategori)
         {
             var sorgu = _context.KasaHareketleri
@@ -35,7 +31,6 @@ namespace DershaneTakipSistemi.Services
             }
             if (bitisTarihi.HasValue)
             {
-                // Bitiş tarihini gün sonuna ayarlayarak o günün tamamını dahil ediyoruz.
                 sorgu = sorgu.Where(k => k.Tarih < bitisTarihi.Value.AddDays(1));
             }
             if (kategori.HasValue)
@@ -46,7 +41,6 @@ namespace DershaneTakipSistemi.Services
             return await sorgu.OrderByDescending(k => k.Tarih).ToListAsync();
         }
 
-        // Tek bir kasa hareketini getirme.
         public async Task<KasaHareketi?> GetKasaHareketiByIdAsync(int id)
         {
             return await _context.KasaHareketleri
@@ -55,21 +49,18 @@ namespace DershaneTakipSistemi.Services
                 .FirstOrDefaultAsync(m => m.Id == id);
         }
 
-        // Yeni kasa hareketi ekleme.
         public async Task CreateKasaHareketiAsync(KasaHareketi kasaHareketi)
         {
             _context.Add(kasaHareketi);
             await _context.SaveChangesAsync();
         }
 
-        // Kasa hareketi güncelleme.
         public async Task UpdateKasaHareketiAsync(KasaHareketi kasaHareketi)
         {
             _context.Update(kasaHareketi);
             await _context.SaveChangesAsync();
         }
 
-        // Kasa hareketi silme.
         public async Task DeleteKasaHareketiAsync(int id)
         {
             var kasaHareketi = await _context.KasaHareketleri.FindAsync(id);
@@ -80,13 +71,11 @@ namespace DershaneTakipSistemi.Services
             }
         }
 
-        // Varlık kontrolü
         public bool KasaHareketiExists(int id)
         {
             return _context.KasaHareketleri.Any(e => e.Id == id);
         }
 
-        // --- Dropdown Listeleri İçin Yardımcı Metotlar ---
 
         public SelectList GetOgrenciSelectList(object? seciliOgrenci = null)
         {

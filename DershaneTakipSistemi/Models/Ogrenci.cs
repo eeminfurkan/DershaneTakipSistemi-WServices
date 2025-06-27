@@ -38,8 +38,6 @@ namespace DershaneTakipSistemi.Models
         [Display(Name = "Sınıfı")]
         public virtual Sinif? Sinifi { get; set; }
 
-        // public virtual ICollection<Odeme>? Odemeler { get; set; } // <-- BU SATIR SİLİNDİ
-
         [NotMapped]
         [Display(Name = "Adı Soyadı")]
         public string AdSoyad => $"{Ad} {Soyad}";

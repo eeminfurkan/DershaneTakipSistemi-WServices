@@ -1,6 +1,4 @@
-﻿// Controllers/KasaHareketisController.cs
-
-using DershaneTakipSistemi.Models;
+﻿using DershaneTakipSistemi.Models;
 using DershaneTakipSistemi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +25,6 @@ namespace DershaneTakipSistemi.Controllers
         {
             var filtrelenmisListe = await _kasaHareketiService.GetKasaHareketleriAsync(baslangicTarihi, bitisTarihi, kategori);
 
-            // Özet Hesaplamaları Controller'da yapmaya devam edebiliriz, çünkü bu bir sunum mantığıdır.
             decimal toplamGelir = filtrelenmisListe.Where(k => k.HareketYonu == HareketYonu.Giris).Sum(k => k.Tutar);
             decimal toplamGider = filtrelenmisListe.Where(k => k.HareketYonu == HareketYonu.Cikis).Sum(k => k.Tutar);
             decimal bakiye = toplamGelir - toplamGider;
@@ -36,7 +33,6 @@ namespace DershaneTakipSistemi.Controllers
             ViewBag.ToplamGider = toplamGider.ToString("C");
             ViewBag.Bakiye = bakiye.ToString("C");
 
-            // Filtreleme elemanlarını View'a geri gönderme
             ViewBag.KategoriListesi = new SelectList(Enum.GetValues(typeof(Kategori)), kategori);
             ViewBag.MevcutBaslangicTarihi = baslangicTarihi?.ToString("yyyy-MM-dd");
             ViewBag.MevcutBitisTarihi = bitisTarihi?.ToString("yyyy-MM-dd");
@@ -65,7 +61,6 @@ namespace DershaneTakipSistemi.Controllers
                 await _kasaHareketiService.CreateKasaHareketiAsync(kasaHareketi);
                 return RedirectToAction(nameof(Index));
             }
-            // Hata durumunda dropdown'ları tekrar doldur
             ViewData["OgrenciId"] = _kasaHareketiService.GetOgrenciSelectList(kasaHareketi.OgrenciId);
             ViewData["PersonelId"] = _kasaHareketiService.GetPersonelSelectList(kasaHareketi.PersonelId);
             ViewData["HareketYonu"] = new SelectList(Enum.GetValues(typeof(HareketYonu)), kasaHareketi.HareketYonu);
@@ -82,14 +77,11 @@ namespace DershaneTakipSistemi.Controllers
             var kasaHareketi = await _kasaHareketiService.GetKasaHareketiByIdAsync(id.Value);
             if (kasaHareketi == null) return NotFound();
 
-            // --- DÜZELTME BAŞLANGICI ---
-            // Edit sayfasını açarken TÜM dropdown listelerini dolduruyoruz.
             ViewData["OgrenciId"] = _kasaHareketiService.GetOgrenciSelectList(kasaHareketi.OgrenciId);
             ViewData["PersonelId"] = _kasaHareketiService.GetPersonelSelectList(kasaHareketi.PersonelId);
             ViewData["HareketYonu"] = new SelectList(Enum.GetValues(typeof(HareketYonu)), kasaHareketi.HareketYonu);
             ViewData["Kategori"] = new SelectList(Enum.GetValues(typeof(Kategori)), kasaHareketi.Kategori);
             ViewData["OdemeYontemi"] = new SelectList(Enum.GetValues(typeof(OdemeYontemi)), kasaHareketi.OdemeYontemi);
-            // --- DÜZELTME SONU ---
 
             return View(kasaHareketi);
         }
@@ -121,15 +113,11 @@ namespace DershaneTakipSistemi.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // --- DÜZELTME BAŞLANGICI ---
-            // Eğer model geçersizse ve form tekrar gösterilecekse,
-            // TÜM dropdown listelerini tekrar dolduruyoruz.
             ViewData["OgrenciId"] = _kasaHareketiService.GetOgrenciSelectList(kasaHareketi.OgrenciId);
             ViewData["PersonelId"] = _kasaHareketiService.GetPersonelSelectList(kasaHareketi.PersonelId);
             ViewData["HareketYonu"] = new SelectList(Enum.GetValues(typeof(HareketYonu)), kasaHareketi.HareketYonu);
             ViewData["Kategori"] = new SelectList(Enum.GetValues(typeof(Kategori)), kasaHareketi.Kategori);
             ViewData["OdemeYontemi"] = new SelectList(Enum.GetValues(typeof(OdemeYontemi)), kasaHareketi.OdemeYontemi);
-            // --- DÜZELTME SONU ---
 
             return View(kasaHareketi);
         }

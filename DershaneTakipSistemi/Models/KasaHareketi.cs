@@ -31,16 +31,16 @@ namespace DershaneTakipSistemi.Models
         public Kategori Kategori { get; set; }
 
         [Display(Name = "Ödeme Yöntemi")]
-        public OdemeYontemi? OdemeYontemi { get; set; } // Nullable, her işlemde olmayabilir
+        public OdemeYontemi? OdemeYontemi { get; set; }
 
         // İlişkili Alanlar
         [Display(Name = "İlgili Öğrenci")]
-        public int? OgrenciId { get; set; } // Nullable
+        public int? OgrenciId { get; set; }
         [ForeignKey("OgrenciId")]
         public virtual Ogrenci? Ogrenci { get; set; }
 
         [Display(Name = "İlgili Personel")]
-        public int? PersonelId { get; set; } // Nullable
+        public int? PersonelId { get; set; }
         [ForeignKey("PersonelId")]
         public virtual Personel? Personel { get; set; }
     }

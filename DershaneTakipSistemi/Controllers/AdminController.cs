@@ -38,7 +38,6 @@ namespace DershaneTakipSistemi.Controllers
             return View(userViewModels);
         }
 
-        // YENİ METODLAR BAŞLANGIÇ
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -78,25 +77,23 @@ namespace DershaneTakipSistemi.Controllers
                 return NotFound();
             }
 
-            return View(user); // Kullanıcıyı silme onay sayfasına gönder
+            return View(user);
         }
 
         // POST: Admin/DeleteUser/5
         [HttpPost, ActionName("DeleteUser")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteUserConfirmed(string Id) // <-- Parametre adı "Id" olarak değiştirildi
+        public async Task<IActionResult> DeleteUserConfirmed(string Id)
         {
             if (Id == null)
             {
                 return NotFound();
             }
-            var user = await _userManager.FindByIdAsync(Id); // <-- Burada da "Id" kullanılıyor
+            var user = await _userManager.FindByIdAsync(Id);
             if (user != null)
             {
-                // Bir adminin kendini silmesini engellemek için ek bir kontrol
                 if (user.UserName == User.Identity.Name)
                 {
-                    // Hata mesajı gösterilebilir veya sadece ana sayfaya yönlendirilebilir.
                     return RedirectToAction(nameof(Index));
 
                 }

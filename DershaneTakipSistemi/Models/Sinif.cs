@@ -14,8 +14,6 @@ namespace DershaneTakipSistemi.Models
         [StringLength(100)]
         public string Ad { get; set; } = string.Empty;
 
-        // Açıklama ve Kapasite property'leri buradan kaldırıldı.
-
         [Display(Name = "Sınıf Öğretmeni")]
         public int? OgretmenPersonelId { get; set; }
 
